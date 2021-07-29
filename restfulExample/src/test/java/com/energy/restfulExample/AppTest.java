@@ -5,17 +5,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
 import junit.framework.TestCase;
 
 /**
  * Unit test for simple App.
+ * Uncomment @Test to activate the JUnit test
  */
 public class AppTest extends TestCase {
+
 	
+	
+	@SuppressWarnings("static-access")
 	@Test
-	void test() {
+	void testApp() throws ParseException {
+		String args[] = {"O"};
+		App app = new App();
+		app.main(args);
+	}
+	
+	//@Test
+	void testCustomeCsvGenerator() {
 		CustomeCsvGenerator sort = new CustomeCsvGenerator("T");
 		
 		try {
@@ -61,10 +73,4 @@ public class AppTest extends TestCase {
 		assertFalse(input5.matches(regex));
 		
 	}
-	
-	
-	
-	
-	
-    
 }

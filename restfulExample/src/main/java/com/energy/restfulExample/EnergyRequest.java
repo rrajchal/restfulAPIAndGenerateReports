@@ -1,5 +1,10 @@
 package com.energy.restfulExample;
 
+/**
+ * This is just bean class for variables.
+ * No annotation or ApplicationContext interfaces were used. 
+ * @author Rajesh
+ */
 public class EnergyRequest {
 	int activeMonth;
 	String organization;

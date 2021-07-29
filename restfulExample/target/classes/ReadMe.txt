@@ -9,19 +9,11 @@ Running in Eclipse IDE (preferred)
 ==================================
 1. Unzip the App.zip folder
 2. Import the project to the Maven project into eclipse (Other IDEs may require other steps)
-3. Run the App.java program (Ctrl + F11)
-   By default, it will create three files: jsonFile.json, csvFile.csv, and csvFileSortByOrgName.csv
-   To sort by release count or total labor hours, assign sortBy value to R or T in App.java
-
-Running in Command Line
-=======================
-1. Unzip the App.zip folder
-2. Open command line.
-3. Go to the folder containing App.java (make sure mvn and java are configured/installed properly with valid system PATH)
-4. Write javac App.java to compile the java file
-5. Write java App X to run the program, where X is an uppercase letter O, R, or T 
-	O: sort by Organization name - csvFileSortByOrgName.csv
-	R: sort by release count - csvFileSortByReleaseCount.csv
-	T: sort by total labor hours - csvFileSortByTotalLaborHours.csv
-	else: sort by Organization name. - csvFileSortByOrgName.csv
-6. Optionally, you can run the App.java from the Maven project from eclipse IDE 
+3. Run the App.java program (Ctrl + F11 in Eclipse).
+4. Enter your option to sort by: 1, 2, or 3.
+       1: sort by Organization name - csvFileSortByOrgName.csv
+	   2: sort by release count - csvFileSortByReleaseCount.csv
+	   3: sort by total labor hours - csvFileSortByTotalLaborHours.csv
+	   else: sort by Organization name. - csvFileSortByOrgName.csv
+   By default, it will create three files: jsonFile.json, csvFile.csv, and the chosen sort by csv file
+5. Optionally, you can run the test cases from AppTest.java. To do this, right-click on AppTest.java and run as JUnit Test

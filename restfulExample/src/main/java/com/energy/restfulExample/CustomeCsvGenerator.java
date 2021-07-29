@@ -15,7 +15,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.opencsv.CSVReader;
-
+/**
+ * This creates a csv file with 5 fields: Organization name, Release count, Total labor hours, All in production, and Most active months
+ * The data will be sorted based on user's selection or Organization name. 
+ * @author Rajesh
+ *
+ */
 public class CustomeCsvGenerator {
 	
 	private String sortBy;
@@ -58,6 +63,12 @@ public class CustomeCsvGenerator {
 
 	}
 
+	/**
+	 * This sorts the data
+	 * @param records
+	 * @param sortBy
+	 * @return
+	 */
 	private List<EnergyRequest> sortData(List<EnergyRequest> records, String sortBy) {
 		if (sortBy.equals("O")) {
 			return records.stream().sorted(Comparator.comparing(EnergyRequest::getOrganization)).collect(Collectors.toList());
@@ -69,6 +80,11 @@ public class CustomeCsvGenerator {
 		return records.stream().sorted(Comparator.comparing(EnergyRequest::getOrganization)).collect(Collectors.toList());
 	}
 
+	/**
+	 * This calculates field values and return the List of EnergyRequest class which is ready to write to CSV
+	 * @param records
+	 * @return List<EnergyRequest> 
+	 */
 	private List<EnergyRequest> getRequiredData(List<EnergyRequest> records) {
 		if (records == null || records.size() == 0)
 			return null;
@@ -89,6 +105,11 @@ public class CustomeCsvGenerator {
 		return energyRequestList;
 	}
 
+	/**
+	 * returns a value for the All_In_Production field
+	 * @param list
+	 * @return
+	 */
 	private boolean allInProduction(List<EnergyRequest> list) {
 		for (EnergyRequest req: list) {
 			if (req.getStatus() == false) {
@@ -99,7 +120,10 @@ public class CustomeCsvGenerator {
 	}
 
 
-	// This function needs to verify. Not clear yet: Array with highest number(multiple highest)??
+	/**
+	 * This finds the mode values for the month of date created.
+	 * This function needs to verify. Not clear yet: Array with highest number(multiple highest)??
+	 */
 	public int[] getActiveMonths(List<EnergyRequest> list) {
 		if (list == null || list.size() == 0)
 			return new int[0];
@@ -108,7 +132,12 @@ public class CustomeCsvGenerator {
 		return modes.stream().mapToInt(x -> x).toArray();
 	}
 	
-	// https://stackoverflow.com/questions/4191687/how-to-calculate-mean-median-mode-and-range-from-a-set-of-numbers
+	/**
+	 * Calculates mode from List of Integers
+	 * This function is modified from https://stackoverflow.com/questions/4191687/how-to-calculate-mean-median-mode-and-range-from-a-set-of-numbers
+	 * @param numbers
+	 * @return
+	 */
 	public List<Integer> getModes(List<Integer> numbers) {
 	    final Map<Integer, Long> countFrequencies = numbers.stream()
 	            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
@@ -123,6 +152,11 @@ public class CustomeCsvGenerator {
 	            .collect(Collectors.toList());
 	}
 
+	/**
+	 * This collect list of permission licenses and return a string for the list
+	 * @param list
+	 * @return
+	 */
 	private String getLicenses(List<EnergyRequest> list) {
 		if (list == null || list.size() == 0)
 			return "";
@@ -130,7 +164,11 @@ public class CustomeCsvGenerator {
 		return String.join(", ", licenses);
 	}
 
-
+	/**
+	 * This is a field for the csv report which is the added labor hours
+	 * @param list
+	 * @return
+	 */
 	private Double getTotalHours(List<EnergyRequest> list) {
 		if (list == null || list.size() == 0)
 			return 0.0;
@@ -138,6 +176,11 @@ public class CustomeCsvGenerator {
 		return hours.stream().collect(Collectors.summingDouble(Double::doubleValue));
 	}
 
+	/**
+	 * This function parse the permission field from the raw csv field and parse the License
+	 * @param str
+	 * @return
+	 */
 	private String getLicense(String str) {
 		int begin = str.indexOf("name:");
 		int end = str.indexOf(",");
@@ -148,10 +191,20 @@ public class CustomeCsvGenerator {
 		return license;
 	}
 
+	/**
+	 * If the release is the Production it returns true
+	 * @param str
+	 * @return
+	 */
 	private boolean getStatus(String str) {
 		return str.equals("Production") ? true : false;
 	}
 
+	/**
+	 * This make sure the hours is decimal value
+	 * @param str
+	 * @return
+	 */
 	private Double getHours(String str) {
 		String regex = "\\d+.\\d+";
 		//System.out.println(str.matches(regex) ? Double.valueOf(str) : 0);
@@ -159,6 +212,11 @@ public class CustomeCsvGenerator {
 		
 	}
 
+	/**
+	 * This extract month from date (created date)
+	 * @param str
+	 * @return
+	 */
 	private int getActiveMonth(String str) {
 		int monthIndex = str.indexOf("-");
 		String monthStr = str.substring(monthIndex+1, monthIndex+3);
@@ -167,17 +225,11 @@ public class CustomeCsvGenerator {
 		return monthStr.matches(regex) ? Integer.valueOf(monthStr) : 0;
 	}
 	
-	//https://www.baeldung.com/java-csv
-	private void writeToCsv(List<EnergyRequest> specificRecordsSorted) throws IOException {
-		String fileName = getFileName(sortBy);
-		File file = new File(fileName);
-		List <String[]> dataLines = lines(specificRecordsSorted);
-		
-		try (PrintWriter pw = new PrintWriter(file)) {
-	        dataLines.stream().map(this::convertToCSV).forEach(pw::println);
-	    }
-	}
-	
+	/**
+	 * Returns a file name based on user selection
+	 * @param sortBy
+	 * @return
+	 */
 	private String getFileName(String sortBy) {
 		String fileName = "csvFile";
 		if (sortBy.equals("O")) {
@@ -189,13 +241,28 @@ public class CustomeCsvGenerator {
 		}
 		return "csvFile.csv";
 	}
-
-	public String convertToCSV(String[] data) {
-	    return Stream.of(data)
-	      .map(this::escapeSpecialCharacters)
-	      .collect(Collectors.joining(","));
+	
+	/**
+	 * This function write the List of class to csv file. 
+	 * This code is modified from https://www.baeldung.com/java-csv
+	 * @param specificRecordsSorted
+	 * @throws IOException
+	 */
+	private void writeToCsv(List<EnergyRequest> specificRecordsSorted) throws IOException {
+		String fileName = getFileName(sortBy);
+		File file = new File(fileName);
+		List <String[]> dataLines = lines(specificRecordsSorted);
+		
+		try (PrintWriter pw = new PrintWriter(file)) {
+	        dataLines.stream().map(this::convertToCSV).forEach(pw::println);
+	    }
 	}
 	
+	/**
+	 * Required function to write to CSV
+	 * @param data
+	 * @return
+	 */
 	public String escapeSpecialCharacters(String data) {
 	    String escapedData = data.replaceAll("\\R", " ");
 	    if (data.contains(",") || data.contains("\"") || data.contains("'")) {
@@ -205,6 +272,22 @@ public class CustomeCsvGenerator {
 	    return escapedData;
 	}
 	
+	/**
+	 * Required function to write to CSV
+	 * @param data
+	 * @return
+	 */
+	public String convertToCSV(String[] data) {
+	    return Stream.of(data)
+	      .map(this::escapeSpecialCharacters)
+	      .collect(Collectors.joining(","));
+	}
+	
+	/**
+	 * Add lines with data to write to csv file
+	 * @param records
+	 * @return
+	 */
 	private List <String[]> lines(List<EnergyRequest> records) {
 		List<String[]> lines = new ArrayList<>();
 		
@@ -218,6 +301,10 @@ public class CustomeCsvGenerator {
 		return lines;
 	}
 	
+	/**
+	 * this is for testing data
+	 * @param records
+	 */
 	@SuppressWarnings("unused")
 	private void displayData(List<EnergyRequest> records) {
 		for (EnergyRequest r : records) {
@@ -226,6 +313,10 @@ public class CustomeCsvGenerator {
 		
 	}
 	
+	/**
+	 * this is for testing data
+	 * @param specificRecords
+	 */
 	@SuppressWarnings("unused")
 	private void displayRefinedData(List<EnergyRequest> specificRecords) {
 		for (EnergyRequest r : specificRecords) {

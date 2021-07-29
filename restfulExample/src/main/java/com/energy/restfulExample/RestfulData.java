@@ -16,6 +16,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
+/**
+ * This class access to Restful data.
+ * This class has been tested for https://www.energy.gov/sites/prod/files/2020/12/f81/code-12-15-2020.json
+ * This class also creates two files: json and csv (without any customization)
+ * @author Rajesh
+ */
 public class RestfulData {
 	
 	private String urlLink;
